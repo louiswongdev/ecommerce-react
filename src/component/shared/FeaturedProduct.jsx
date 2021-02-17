@@ -1,15 +1,14 @@
 import React, { useContext } from 'react';
-// import { isInCart } from '../../helpers';
 
 import { withRouter } from 'react-router-dom';
 import './FeaturedProduct.styles.scss';
 
-const FeaturedProduct = ({ title, imageUrl, price }) => {
+const FeaturedProduct = ({ title, imageUrl, price, id, history }) => {
   return (
     <div className="featured-product">
       <div
         className="featured-image"
-        // onClick={() => history.push(`/product/${id}`)}
+        onClick={() => history.push(`/product/${id}`)}
       >
         <img src={imageUrl} alt="product" />
       </div>
@@ -17,24 +16,10 @@ const FeaturedProduct = ({ title, imageUrl, price }) => {
         <h3>{title}</h3>
         <p>$ {price}</p>
         <button className="button is-black nomad-btn">ADD TO CART</button>
-        {/* { 
-          !itemInCart && 
-          <button 
-            className='button is-black nomad-btn'
-            onClick={() => addProduct(product)}>
-              ADD TO CART</button>
-        }
-        {
-          itemInCart &&
-          <button 
-            className='button is-white nomad-btn'
-            id='btn-white-outline'
-            onClick={()=> increase(product)}>
-              ADD MORE</button>
-        } */}
       </div>
     </div>
   );
 };
 
+// export default withRouter(FeaturedProduct);
 export default withRouter(FeaturedProduct);
