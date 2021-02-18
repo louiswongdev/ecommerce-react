@@ -9,11 +9,10 @@ import Layout from '../shared/Layout';
 import './SingleProduct.styles.scss';
 
 const SingleProduct = ({ match, history: { push } }) => {
-  const { addProduct, cartItems } = useContext(CartContext);
+  const { addProduct, increase, cartItems } = useContext(CartContext);
   const { products } = useContext(ProductsContext);
   const { id } = match.params;
   const [product, setProduct] = useState(null);
-  const itemInCart = isInCart(product, cartItems);
 
   useEffect(() => {
     const product = products.find(item => Number(item.id) === Number(id));
@@ -30,6 +29,7 @@ const SingleProduct = ({ match, history: { push } }) => {
     return null;
   }
   const { imageUrl, title, price, description } = product;
+  const itemInCart = isInCart(product, cartItems);
 
   return (
     <Layout>
@@ -47,7 +47,7 @@ const SingleProduct = ({ match, history: { push } }) => {
               <button
                 className="button is-white nomad-btn"
                 id="btn-white-outline"
-                onClick={() => {}}
+                onClick={() => increase(product)}
               >
                 ADD MORE
               </button>

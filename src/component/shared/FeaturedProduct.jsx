@@ -6,14 +6,14 @@ import { CartContext } from '../../context/cartContext';
 import './FeaturedProduct.styles.scss';
 
 const FeaturedProduct = ({ product, history }) => {
-  const { addProduct, cartItems } = useContext(CartContext);
+  const { addProduct, increase, cartItems } = useContext(CartContext);
   const itemInCart = isInCart(product, cartItems);
 
   return (
     <div className="featured-product">
       <div
         className="featured-image"
-        onClick={() => history.push(`/product/${product?.id}`)}
+        onClick={() => history.push(`/product/${product.id}`)}
       >
         <img src={product?.imageUrl} alt="product" />
       </div>
@@ -24,7 +24,7 @@ const FeaturedProduct = ({ product, history }) => {
           <button
             className="button is-white nomad-btn"
             id="btn-white-outline"
-            onClick={() => {}}
+            onClick={() => increase(product)}
           >
             ADD MORE
           </button>

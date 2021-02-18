@@ -13,12 +13,15 @@ const CartContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(cartReducer, initialState);
   const addProduct = product =>
     dispatch({ type: 'ADD_ITEM', payload: product });
+  const increase = product => dispatch({ type: 'INCREASE', payload: product });
 
   // const contextValues = {
   //   ...state,
   // };
 
-  const contextValues = useMemo(() => ({ ...state, addProduct }), [state]);
+  const contextValues = useMemo(() => ({ ...state, addProduct, increase }), [
+    state,
+  ]);
 
   return (
     <CartContext.Provider value={contextValues}>
