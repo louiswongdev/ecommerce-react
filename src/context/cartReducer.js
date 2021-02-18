@@ -1,5 +1,3 @@
-import React, { createContext, useReducer } from 'react';
-
 export const sumItems = cartItems => {
   return {
     itemCount: cartItems.reduce((acc, prod) => acc + prod.quantity, 0),
@@ -24,7 +22,7 @@ const cartReducer = (state, action) => {
 
       return {
         ...state,
-        cartItems: newCartItems,
+        cartItems: [...newCartItems],
         ...sumItems(newCartItems),
       };
 
@@ -38,6 +36,39 @@ const cartReducer = (state, action) => {
         ...state,
         cartItems: [...state.cartItems],
         ...sumItems(state.cartItems),
+      };
+
+    case 'DECREASE':
+      const decreaseIndex = state.cartItems.findIndex(
+        item => item.id === action.payload.id,
+      );
+      const product = state.cartItems[decreaseIndex];
+      if (product.quantity > 1) {
+        product.quantity--;
+      }
+
+      return {
+        ...state,
+        cartItems: [...state.cartItems],
+        ...sumItems(state.cartItems),
+      };
+
+    case 'REMOVE_ITEM':
+      const cartWithRemovedItems = state.cartItems.filter(
+        item => item.id !== action.payload.id,
+      );
+
+      return {
+        ...state,
+        cartItems: [...cartWithRemovedItems],
+        ...sumItems(cartWithRemovedItems),
+      };
+
+    case 'CLEAR':
+      return {
+        cartItems: [],
+        itemCount: 0,
+        total: 0,
       };
     default:
       return state;

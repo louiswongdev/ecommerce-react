@@ -11,22 +11,31 @@ const initialState = {
 
 const CartContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(cartReducer, initialState);
-  const addProduct = product =>
-    dispatch({ type: 'ADD_ITEM', payload: product });
+  const addProduct = product => dispatch({ type: 'ADD_ITEM', payload: product });
   const increase = product => dispatch({ type: 'INCREASE', payload: product });
+  const decrease = product => dispatch({ type: 'DECREASE', payload: product });
+  const removeProduct = product =>
+    dispatch({ type: 'REMOVE_ITEM', payload: product });
+  const clearCart = () => dispatch({ type: 'CLEAR' });
 
   // const contextValues = {
   //   ...state,
   // };
 
-  const contextValues = useMemo(() => ({ ...state, addProduct, increase }), [
-    state,
-  ]);
+  const contextValues = useMemo(
+    () => ({
+      ...state,
+      addProduct,
+      increase,
+      decrease,
+      removeProduct,
+      clearCart,
+    }),
+    [state],
+  );
 
   return (
-    <CartContext.Provider value={contextValues}>
-      {children}
-    </CartContext.Provider>
+    <CartContext.Provider value={contextValues}>{children}</CartContext.Provider>
   );
 };
 
