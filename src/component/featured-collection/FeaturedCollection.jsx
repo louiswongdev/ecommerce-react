@@ -16,7 +16,8 @@ const FeaturedCollection = () => {
         {products
           .filter((_, i) => i < 4)
           .map(product => (
-            <FeaturedProduct {...product} key={product.id} />
+            // <FeaturedProduct {...product} key={product.id} />
+            <FeaturedProduct product={product} key={product.id} />
           ))}
       </div>
     </div>

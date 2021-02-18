@@ -16,7 +16,7 @@ const Shop = () => {
         <h2 className="product-list-title">Shop</h2>
         <div className="product-list">
           {products.map(product => (
-            <FeaturedProduct {...product} key={product.id} />
+            <FeaturedProduct product={product} key={product.id} />
           ))}
         </div>
       </div>
