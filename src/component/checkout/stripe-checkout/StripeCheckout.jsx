@@ -3,6 +3,7 @@ import { useStripe } from '@stripe/react-stripe-js';
 import { fetchFromAPI } from '../../../helpers';
 import { CartContext } from '../../../context/cartContext';
 
+// Stripe hosted checkout component
 const StripeCheckout = () => {
   const [email, setEmail] = useState('');
   const { cartItems } = useContext(CartContext);
