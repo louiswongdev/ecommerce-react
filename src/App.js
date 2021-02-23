@@ -7,6 +7,8 @@ import HomePage from './component/HomePage';
 import NotFound from './component/notFound';
 import CartPage from './component/pages/cart-page/CartPage';
 import Shop from './component/pages/shop/Shop';
+import Signin from './component/signin/Signin';
+import Signup from './component/signup/Signup';
 import SingleProduct from './component/single-product/SingleProduct';
 
 function App() {
@@ -20,6 +22,8 @@ function App() {
         <Route path="/checkout" component={Checkout} />
         <Route path="/success" component={Success} />
         <Route path="/cancelled" component={Cancelled} />
+        <Route path="/signup" component={Signup} />
+        <Route path="/signin" component={Signin} />
         <Route path="*" component={NotFound} />
       </Switch>
     </div>
