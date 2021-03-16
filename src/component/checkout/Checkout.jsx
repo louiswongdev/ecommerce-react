@@ -1,5 +1,7 @@
 import React, { useContext, useState } from 'react';
+import { withRouter } from 'react-router-dom';
 import { CartContext } from '../../context/cartContext';
+import { UserContext } from '../../context/userContext';
 import Layout from '../shared/Layout';
 
 import './Checkout.styles.scss';
@@ -7,7 +9,8 @@ import CustomCheckout from './custom-checkout/CustomCheckout';
 import ShippingAddress from './custom-checkout/ShippingAddress';
 // import StripeCheckout from './stripe-checkout/StripeCheckout';
 
-const Checkout = () => {
+const Checkout = ({ history: { push } }) => {
+  const { user } = useContext(UserContext);
   const { itemCount, total, cartItems } = useContext(CartContext);
   const [shipping, setShipping] = useState(null);
   const addressShown = {
@@ -28,11 +31,11 @@ const Checkout = () => {
         </div>
         <div style={cardShown}>
           {/* <CustomCheckout shipping={shipping} cartItems={cartItems} /> */}
-          <CustomCheckout {...{ shipping, cartItems }} />
+          {user ? <CustomCheckout {...{ shipping, cartItems }} /> : push('/signin')}
         </div>
       </div>
     </Layout>
   );
 };
 
-export default Checkout;
+export default withRouter(Checkout);

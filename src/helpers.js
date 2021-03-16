@@ -13,7 +13,6 @@ export async function fetchFromAPI(endpoint, opts) {
 
   // get user jwt token
   const token = await auth?.currentUser?.getIdToken();
-  console.log('token: ', token);
 
   const res = await fetch(`${API}/${endpoint}`, {
     method,

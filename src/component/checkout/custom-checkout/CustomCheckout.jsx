@@ -20,13 +20,16 @@ const CustomCheckout = ({ shipping, cartItems, history: { push } }) => {
   const [clientSecret, setClientSecret] = useState(null);
   const [cards, setCards] = useState(null);
   const [paymentCard, setPaymentCard] = useState('');
-  const [savedCard, setSavedCard] = useState(false);
+  const [isSavingCard, setIsSavingCard] = useState(false);
   const [paymentIntentId, setPaymentIntentId] = useState(null);
   const stripe = useStripe();
   const elements = useElements();
 
   useEffect(() => {
     console.log('Cards saved: ', cards);
+    console.log('payment card: ', paymentCard);
+    console.log('client_secret: ', clientSecret);
+    console.log('isSavingCard: ', isSavingCard);
 
     const items = cartItems.map(item => ({
       price: item.price,
@@ -82,54 +85,20 @@ const CustomCheckout = ({ shipping, cartItems, history: { push } }) => {
   // handle checkout for newly entered credit card info
   const handleCheckout = async () => {
     setProcessing(true);
-    let setupIntent;
-    // check if user has selected to save card
-    if (savedCard) {
-      setupIntent = await fetchFromAPI('save-payment-method');
-    }
 
-    const payload = await stripe.confirmCardPayment(clientSecret, {
-      payment_method: {
-        card: elements.getElement(CardNumberElement),
-      },
-    });
-
-    if (payload.error) {
-      setError(`Payment Failed: ${payload.error.message}`);
-    } else {
-      if (savedCard && setupIntent) {
-        // send customers card details to be saved with stripe
-        await stripe.confirmCardSetup(setupIntent.client_secret, {
-          payment_method: {
-            card: elements.getElement(CardNumberElement),
-          },
-        });
-      } else {
-        push('/success');
-      }
+    try {
+      const payload = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: paymentCard
+          ? paymentCard
+          : {
+              card: elements.getElement(CardNumberElement),
+            },
+        setup_future_usage: isSavingCard ? 'off_session' : '',
+      });
       push('/success');
-    }
-  };
-
-  // handle checkout with saved credit card info
-  const savedCardCheckout = async () => {
-    setProcessing(true);
-
-    // update payment intent to include customer parameter
-    const { clientSecret } = await fetchFromAPI('update-payment-intent', {
-      body: { paymentIntentId },
-      method: 'PUT',
-    });
-
-    const payload = await stripe.confirmCardPayment(clientSecret, {
-      payment_method: paymentCard, // paymentCard contains id of card
-    });
-
-    if (payload.error) {
-      setError(`Payment Failed: ${payload.error.message}`);
-      setProcessing(false);
-    } else {
-      push('/success');
+    } catch (error) {
+      setError(`Payment Failed: ${error.message}`);
+      console.log(error);
     }
   };
 
@@ -189,45 +158,49 @@ const CustomCheckout = ({ shipping, cartItems, history: { push } }) => {
           >
             {cardOption}
           </select>
-          <button
+          {/* <button
             type="submit"
             disabled={processing || !paymentCard}
             className="button is-black nomad-btn submit saved-card-btn"
             onClick={() => savedCardCheckout()}
           >
             {processing ? 'PROCESSING' : 'PAY WITH SAVED CARD'}
-          </button>
+          </button> */}
         </div>
       )}
-      <h4>Enter Payment Details</h4>
-      <div className="stripe-card">
-        <CardNumberElement
-          className="card-element"
-          options={cardStyle}
-          onChange={cardHandleChange}
-        />
-      </div>
-      <div className="stripe-card">
-        <CardExpiryElement
-          className="card-element"
-          options={cardStyle}
-          onChange={cardHandleChange}
-        />
-      </div>
-      <div className="stripe-card">
-        <CardCvcElement
-          className="card-element"
-          options={cardStyle}
-          onChange={cardHandleChange}
-        />
-      </div>
-      {user && (
+      {!paymentCard && (
+        <>
+          <h4>Enter Payment Details</h4>
+          <div className="stripe-card">
+            <CardNumberElement
+              className="card-element"
+              options={cardStyle}
+              onChange={cardHandleChange}
+            />
+          </div>
+          <div className="stripe-card">
+            <CardExpiryElement
+              className="card-element"
+              options={cardStyle}
+              onChange={cardHandleChange}
+            />
+          </div>
+          <div className="stripe-card">
+            <CardCvcElement
+              className="card-element"
+              options={cardStyle}
+              onChange={cardHandleChange}
+            />
+          </div>
+        </>
+      )}
+      {user && !paymentCard && (
         <div className="save-card">
           <label>Save Card</label>
           <input
             type="checkbox"
-            checked={savedCard}
-            onChange={e => setSavedCard(e.target.checked)}
+            checked={isSavingCard}
+            onChange={e => setIsSavingCard(e.target.checked)}
           />
         </div>
       )}

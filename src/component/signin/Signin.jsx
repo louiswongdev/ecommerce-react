@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import Layout from '../shared/Layout';
 import { Formik } from 'formik';
 import { auth } from '../../firebase';
@@ -87,6 +87,14 @@ const SignIn = ({ history: { push } }) => {
               );
             }}
           </Formik>
+        </div>
+        <div>
+          <p className="account-question">
+            Don't have an account?{' '}
+            <span className="account-question__link">
+              <Link to="/signup">Sign Up</Link>
+            </span>
+          </p>
         </div>
       </div>
     </Layout>
